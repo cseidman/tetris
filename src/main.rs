@@ -6,23 +6,19 @@ mod tetromino;
 
 fn main() {
 
-    let stdin = io::stdin();
-    let input = stdin.lock();
-    let buffered_input = io::BufReader::new(input);
+    let buffered_input = io::BufReader::new(io::stdin());
 
     for line in buffered_input.lines() {
-        let mut grid = grid::Grid::new();
         let shape_sequence = line.unwrap();
-        //println!("shape_sequence: {}", shape_sequence.clone()) ;
-        for piece in shape_sequence.split(',') {
+
+        let mut grid = grid::Grid::new();
+
+        shape_sequence.split(',').for_each(|piece| {
             let (p, x) = piece.split_at(1);
             let x = x.parse::<usize>().unwrap();
-            let shape = TetroShape::from(p);
-            grid.place_tetromino(Tetromino::new(shape), x);
+            grid.place_tetromino(Tetromino::new(TetroShape::from(p)), x);
+        }) ;
 
-        }
-        //println!("{}",grid) ;
         println!("{}",grid.get_highest_row());
-
     }
 }

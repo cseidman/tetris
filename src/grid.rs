@@ -3,7 +3,7 @@ use crate::tetromino::{Tetromino};
 const HEIGHT:usize = 100 ;
 const WIDTH:usize = 10 ;
 
-
+/// This struct represents a coordinate on the grid or a tetromino
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub(crate) struct Coord {
     row: usize,
@@ -37,10 +37,13 @@ impl Grid {
         }
     }
 
+    /// Returns the highest row used on the grid from the bottom up
     pub(crate) fn get_highest_row(&self) -> usize {
         HEIGHT-self.first_used_row
     }
 
+    /// Returns true if the tetromino can be placed at the specified coordinate without colliding
+    /// with any other tetrominos on the grid.
     fn can_place_tertomino(&self, teromino: Tetromino, coord: Coord) -> bool {
 
         if coord.row == HEIGHT {
@@ -66,22 +69,26 @@ impl Grid {
         // This is the row where the tetromino can be placed
         coord.row
     }
-
+    /// Places a tetromino on the grid at the specified column
     pub(crate) fn place_tetromino(&mut self, tetromino: Tetromino, column: usize) {
 
+        // Get back the lowest row where the tetromino can be placed
         let lowest_row = self.find_lowest_row(tetromino, column) ;
-
+        // Get the coordinates of the tetromino relative to the lowest row
         let locations = tetromino.get_relative_location(Coord::new(lowest_row, column)) ;
-        for location in locations {
-            if location.row < self.first_used_row {
 
+        for location in locations {
+            // This is how we update the first_used_row
+            if location.row < self.first_used_row {
                 self.first_used_row = location.row ;
             }
+            // We set the cell in the grid to true to indicate it's filled
             self.grid[location.row][location.col] = true ;
         }
+        // We check for full rows and clear them
         self.clear_rows() ;
     }
-
+    /// Clears any full rows and moves everything down
     fn clear_rows(&mut self) {
 
         for row in self.first_used_row..HEIGHT {
@@ -100,7 +107,8 @@ impl Grid {
         }
     }
 }
-
+/// Displays the bottom 10 rows of the grid.
+/// This comes in handy for debugging.
 impl Display for Grid {
    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for rownum in 90..HEIGHT {
@@ -123,22 +131,6 @@ impl Display for Grid {
 mod test {
     use super::* ;
     use crate::tetromino::{Tetromino, TetroShape};
-
-    fn display_grid(grid: &Grid) {
-        for rownum in 90 .. HEIGHT {
-            let row = &grid.grid[rownum] ;
-            print!("{:2}: " , HEIGHT-rownum) ;
-            for cell in row.iter() {
-
-                if *cell {
-                    print!("X") ;
-                } else {
-                    print!(".") ;
-                }
-            }
-            println!() ;
-        }
-    }
 
     #[test]
     fn ex1() {
@@ -211,7 +203,7 @@ mod test {
         grid.place_tetromino(Tetromino::new(TetroShape::T), 1) ;
 
         println!("{}", grid) ;
-        //assert_eq!(5, grid.get_highest_row()) ;
+        assert_eq!(3, grid.get_highest_row()) ;
     }
 
     #[test]

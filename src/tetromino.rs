@@ -32,14 +32,18 @@ impl TetroShape {
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub(crate) struct Tetromino {
-    shape: [[bool; 4]; 3],
+    shape: [[bool; SHAPE_WIDTH]; SHAPE_HEIGHT],
 }
 
 impl Tetromino {
-    /// Returns a new tetromino based on the shape passed in
+    /// Returns a new tetromino based on the `TetroShape` passed in.
     /// The shape is defined as a 3x4 array of booleans, where true means the cell is filled
     /// and false means the cell is empty. The rows of the array are the rows of the tetromino
     /// in reverse order, so the first row of the array is the bottom row of the tetromino.
+    /// Example:
+    /// ```rust
+    /// Tetromino::new(TetroShape::Q) ;
+    /// ```
     pub(crate) fn new(tetroshape: TetroShape) -> Self {
         match tetroshape {
             TetroShape::Q => Tetromino::q_shape(),
@@ -118,16 +122,16 @@ impl Tetromino {
     /// The coordinates passed in are the bottom left corner of the tetromino on the grid, but the first
     /// element of the defined shape.
     pub(crate) fn get_relative_location(&self, coordinates: Coord) -> Vec<Coord> {
-        let mut coords = Vec::with_capacity(12) ;
-        let mut rownum = 0 ;
+        let mut coords = Vec::with_capacity(SHAPE_HEIGHT * SHAPE_WIDTH ) ;
+        let mut row_num = 0 ;
         for row in self.shape {
             for (col, cell) in row.iter().enumerate() {
                 if *cell {
-                    let coord = Coord::new(coordinates.get_row()-rownum, col + coordinates.get_col()) ;
+                    let coord = Coord::new(coordinates.get_row()- row_num, col + coordinates.get_col()) ;
                     coords.push(coord) ;
                 }
             }
-            rownum += 1 ;
+            row_num += 1 ;
         }
         coords
     }
