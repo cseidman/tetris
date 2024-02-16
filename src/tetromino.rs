@@ -12,12 +12,9 @@ pub(crate) enum TetroShape {
     J
 }
 
-impl TetroShape {
-     /// Returns a new tetromino based on the shape letter passed in. Since the input is a string,
-     /// this function is used to parse the input string into a TetroShape enum. Note that if the
-     /// function is called with an unknown shape letter, it will panic.
-     pub(crate) fn from(shape_letter: &str) -> Self {
-        match shape_letter {
+impl Into<TetroShape> for &str {
+    fn into(self) -> TetroShape {
+        match self {
             "Q" => TetroShape::Q,
             "Z" => TetroShape::Z,
             "S" => TetroShape::S,
@@ -25,27 +22,22 @@ impl TetroShape {
             "I" => TetroShape::I,
             "L" => TetroShape::L,
             "J" => TetroShape::J,
-            _ => panic!("Unknown shape: {}", shape_letter),
+            _ => panic!("Unknown shape: {}", self),
         }
-     }
+    }
 }
 
-#[derive(Debug, PartialEq, Clone, Copy)]
-pub(crate) struct Tetromino {
-    shape: [[bool; SHAPE_WIDTH]; SHAPE_HEIGHT],
-}
-
-impl Tetromino {
-    /// Returns a new tetromino based on the `TetroShape` passed in.
-    /// The shape is defined as a 3x4 array of booleans, where true means the cell is filled
-    /// and false means the cell is empty. The rows of the array are the rows of the tetromino
-    /// in reverse order, so the first row of the array is the bottom row of the tetromino.
-    /// Example:
-    /// ```rust
-    /// Tetromino::new(TetroShape::Q) ;
-    /// ```
-    pub(crate) fn new(tetroshape: TetroShape) -> Self {
-        match tetroshape {
+/// Returns a new tetromino based on the `TetroShape` passed in.
+/// The shape is defined as a 3x4 array of booleans, where true means the cell is filled
+/// and false means the cell is empty. The rows of the array are the rows of the tetromino
+/// in reverse order, so the first row of the array is the bottom row of the tetromino.
+/// Example:
+/// ```rust
+/// let t:TetroShape = TetroShape::Q.into() ;
+/// ```
+impl Into<Tetromino> for TetroShape {
+    fn into(self) -> Tetromino {
+        match self {
             TetroShape::Q => Tetromino::q_shape(),
             TetroShape::Z => Tetromino::z_shape(),
             TetroShape::S => Tetromino::s_shape(),
@@ -55,6 +47,15 @@ impl Tetromino {
             TetroShape::J => Tetromino::j_shape(),
         }
     }
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub(crate) struct Tetromino {
+    shape: [[bool; SHAPE_WIDTH]; SHAPE_HEIGHT],
+}
+
+impl Tetromino {
+
     fn q_shape() -> Self {
         Self {
             shape: [

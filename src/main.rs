@@ -16,7 +16,8 @@ fn main() {
         shape_sequence.split(',').for_each(|piece| {
             let (p, x) = piece.split_at(1);
             let x = x.parse::<usize>().unwrap();
-            grid.place_tetromino(Tetromino::new(TetroShape::from(p)), x);
+            let tetroshape: TetroShape = p.into() ;
+            grid.place_tetromino(tetroshape.into(), x);
         }) ;
 
         println!("{}",grid.get_highest_row());

@@ -92,9 +92,11 @@ impl Grid {
     fn clear_rows(&mut self) {
 
         for row in self.first_used_row..HEIGHT {
-            // If the row is full, we move everything down
+            // If the row is full ..
             if self.grid[row].iter().all(|&x| x) {
+                // .. we move everything down one row
                 for r in (1..row+1).rev() {
+
                     self.grid[r] = self.grid[r-1] ;
                 }
                 // As the program finds and eliminates full rows, it increments the first_used_row
@@ -135,9 +137,11 @@ mod test {
     #[test]
     fn ex1() {
         let mut grid = Grid::new();
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 0);
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 4);
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 8);
+
+        for (shape, col) in [("I",0), ("I",4), ("Q",8)] {
+            let tetroshape: TetroShape = shape.into() ;
+            grid.place_tetromino(tetroshape.into(), col);
+        }
 
         println!("{}", grid) ;
         assert_eq!(1, grid.get_highest_row());
@@ -148,9 +152,10 @@ mod test {
     fn ex2() {
         let mut grid = Grid::new() ;
 
-        grid.place_tetromino(Tetromino::new(TetroShape::T), 1) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::Z), 3) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 4) ;
+        for (shape, col) in [("T",1), ("Z",3), ("I",4)] {
+            let tetroshape: TetroShape = shape.into() ;
+            grid.place_tetromino(tetroshape.into(), col);
+        }
 
         println!("{}", grid) ;
         assert_eq!(4, grid.get_highest_row()) ;
@@ -161,14 +166,15 @@ mod test {
 
         let mut grid = Grid::new() ;
 
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 0) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 2) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 6) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 0) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 6) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 6) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 2) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 4) ;
+        for (shape, col) in [
+                ("Q",0), ("I",2), ("I",6),
+                ("I",0), ("I",6), ("I",6),
+                ("Q",2), ("Q",4)
+            ] {
+            let tetroshape: TetroShape = shape.into() ;
+            grid.place_tetromino(tetroshape.into(), col);
+        }
+
 
         println!("{}", grid) ;
         assert_eq!(3, grid.get_highest_row()) ;
@@ -179,15 +185,14 @@ mod test {
 
         let mut grid = Grid::new() ;
 
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 0) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 2) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 6) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 0) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 6) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::I), 6) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 2) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 2) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::Q), 4) ;
+        for (shape,col) in [
+            ("Q", 0), ("I", 2), ("I", 6),
+            ("I", 0), ("I", 6), ("I", 6),
+            ("Q", 2) , ("Q", 2) , ("Q", 4)
+        ] {
+            let tetroshape: TetroShape = shape.into() ;
+            grid.place_tetromino(tetroshape.into(), col);
+        }
 
         println!("{}", grid) ;
         assert_eq!(5, grid.get_highest_row()) ;
@@ -196,11 +201,13 @@ mod test {
     fn ex5() {
         let mut grid = Grid::new() ;
 
-        grid.place_tetromino(Tetromino::new(TetroShape::L), 0) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::J), 3) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::L), 5) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::J), 8) ;
-        grid.place_tetromino(Tetromino::new(TetroShape::T), 1) ;
+        for (shape,col) in [
+            ("L", 0), ("J", 3), ("L", 5),
+            ("J", 8), ("T", 1)
+        ] {
+            let tetroshape: TetroShape = shape.into() ;
+            grid.place_tetromino(tetroshape.into(), col);
+        }
 
         println!("{}", grid) ;
         assert_eq!(3, grid.get_highest_row()) ;
@@ -209,7 +216,7 @@ mod test {
     #[test]
     fn get_location() {
         {
-            let teromino = Tetromino::new(TetroShape::Q);
+            let teromino: Tetromino = TetroShape::Q.into();
             let coords = teromino.get_relative_location(Coord::new(10, 2));
             assert_eq!(coords.len(), 4);
             assert_eq!(coords[0], Coord::new(10, 2));
@@ -219,7 +226,7 @@ mod test {
         }
 
         {
-            let teromino = Tetromino::new(TetroShape::S);
+            let teromino: Tetromino = TetroShape::S.into();
             let coords = teromino.get_relative_location(Coord::new(10, 2));
             assert_eq!(coords.len(), 4);
             assert_eq!(coords[0], Coord::new(10, 2));
@@ -229,7 +236,7 @@ mod test {
         }
 
         {
-            let teromino = Tetromino::new(TetroShape::Z);
+            let teromino: Tetromino = TetroShape::Z.into();
             let coords = teromino.get_relative_location(Coord::new(10, 2));
             assert_eq!(coords.len(), 4);
             assert_eq!(coords[0], Coord::new(10, 3));
@@ -239,7 +246,7 @@ mod test {
         }
 
         {
-            let teromino = Tetromino::new(TetroShape::T);
+            let teromino: Tetromino = TetroShape::T.into();
             let coords = teromino.get_relative_location(Coord::new(10, 2));
             assert_eq!(coords.len(), 4);
             assert_eq!(coords[0], Coord::new(10, 3));
@@ -249,7 +256,7 @@ mod test {
         }
 
         {
-            let teromino = Tetromino::new(TetroShape::I);
+            let teromino: Tetromino = TetroShape::I.into();
             let coords = teromino.get_relative_location(Coord::new(10, 2));
             assert_eq!(coords.len(), 4);
             assert_eq!(coords[0], Coord::new(10, 2));
@@ -259,7 +266,7 @@ mod test {
         }
 
         {
-            let teromino = Tetromino::new(TetroShape::L);
+            let teromino: Tetromino = TetroShape::L.into();
             let coords = teromino.get_relative_location(Coord::new(10, 2));
             assert_eq!(coords.len(), 4);
             assert_eq!(coords[0], Coord::new(10, 2));
