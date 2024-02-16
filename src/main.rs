@@ -1,5 +1,5 @@
 use std::io::{self, BufRead};
-use crate::tetromino::{Tetromino, TetroShape};
+use crate::tetromino::{TetroShape};
 
 mod grid;
 mod tetromino;
